@@ -7,7 +7,7 @@ use actix_web::{
 	body::EitherBody,
 	dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
 	error::Error,
-	HttpResponse,
+	HttpResponse, HttpMessage,
 };
 use futures_util::future::LocalBoxFuture;
 use jsonwebtoken::{decode, decode_header, errors::Error as jwtError, Algorithm, DecodingKey, Header, Validation};
@@ -16,7 +16,7 @@ use std::{
 	rc::Rc,
 };
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct ClerkJwt {
 	pub azp: String,
 	pub exp: i32,
@@ -217,6 +217,7 @@ where
 				Ok(val) => match val.0 {
 					// If it was true then we have authed request and can pass the user onto the next body
 					true => {
+                        req.extensions_mut().insert(val.1);
 						let res = svc.call(req).await?;
 						return Ok(res.map_into_left_body());
 					}
