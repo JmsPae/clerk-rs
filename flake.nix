@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
@@ -19,7 +19,6 @@
             buildInputs = [ 
               pkg-config
               rust-analyzer
-              openssl
               (rust-bin.stable.latest.default.override {
                 extensions = ["rust-src"];
               })
