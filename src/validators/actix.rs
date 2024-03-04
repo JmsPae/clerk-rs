@@ -75,7 +75,7 @@ pub async fn clerk_authorize(req: &ServiceRequest, clerk_client: &Clerk, validat
 	// Get our jwks from Clerk.dev
 	let jwks = match Jwks::get_jwks(clerk_client).await {
 		Ok(val) => val,
-		Err(_) => return Err(HttpResponse::InternalServerError().json("Error: Could not fetch JWKS!")),
+		Err(what) => return Err(HttpResponse::InternalServerError().json(format!("Error: Could not fetch JWKS: {:?}", what))),
 	};
 	// Parse the request headers and prefer the `Authorization` header over the session cookie if provided
 	let access_token: String = match req.headers().get("Authorization") {
